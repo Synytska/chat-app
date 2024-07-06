@@ -1,13 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  Button,
-} from "react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
-import { ChatScreenRouteProp } from "../core/chat/navigationTypes";
+import { View, StyleSheet, FlatList, TextInput, Button } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { MessagingScreenRouteProp } from "../core/chat/navigationTypes";
 import { Message } from "../core/chat/chatTypes";
 import { sendMessage, subscribeToRoomMessages } from "../core/chat/chatService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -16,15 +10,13 @@ import { MessageComponent } from "../shared/components/MessageComponent";
 import socket from "../utils/socket";
 import axios from "axios";
 
-
-
 const Messaging: React.FC = () => {
-  const route = useRoute<ChatScreenRouteProp>();
+  const route = useRoute<MessagingScreenRouteProp>();
   const navigation = useNavigation();
 
-  const { roomId } = route.params;
+  const { roomId, messages: initialMessages } = route.params;
   const [user, setUser] = useState<string>("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>(initialMessages || []);
   const [message, setMessage] = useState<string>("");
 
   const mockMessage = async () => {
@@ -58,7 +50,7 @@ const Messaging: React.FC = () => {
     navigation.setOptions({ title: roomId });
     socket.emit("joinRoom", roomId);
     getUsername();
-
+    mockMessage();
     subscribeToRoomMessages(handleMessage);
 
     return () => {
@@ -68,8 +60,8 @@ const Messaging: React.FC = () => {
 
   const handleSend = () => {
     if (message.trim().length > 0) {
-      const newMessage = {
-        id: "new Date()",
+      const newMessage: Message = {
+        id: String(Date.now()),
         room_id: roomId,
         message,
         user: user || "User1",
@@ -79,6 +71,7 @@ const Messaging: React.FC = () => {
         },
       };
       sendMessage(newMessage);
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
       setMessage("");
       mockMessage();
     }

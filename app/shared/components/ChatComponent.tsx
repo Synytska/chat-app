@@ -1,33 +1,43 @@
 import React, { useLayoutEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { ChatRoom } from "../../core/chat/chatTypes";
+import { ChatRoom, MockRoom, Message } from "../../core/chat/chatTypes";
 import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../core/chat/navigationTypes";
 import socket from "../../utils/socket";
 
 interface ChatComponentProps {
-  item: ChatRoom;
+  item: ChatRoom | MockRoom;
   onDelete: (id: string) => void;
+  disableDelete: boolean;
 }
 
-const ChatComponent: React.FC<ChatComponentProps> = ({ item, onDelete }) => {
-  const navigation =
-    useNavigation<StackNavigationProp<RootStackParamList, "Messaging">>();
-  const [messages, setMessages] = useState<any>({});
-
+const ChatComponent: React.FC<ChatComponentProps> = ({
+  item,
+  onDelete,
+  disableDelete,
+}) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Messaging">>();
+  const [lastMessage, setLastMessage] = useState<Message | null>(null);
+console.log(lastMessage)
   useLayoutEffect(() => {
-    setMessages(item.messages[item.messages.length - 1]);
+    if (item.messages.length > 0) {
+      setLastMessage(item.messages[item.messages.length - 1]);
+    } else {
+      setLastMessage(null);
+    }
   }, [item.messages]);
 
   const handlePress = () => {
-    navigation.navigate("Messaging", { roomId: item.id });
+    navigation.navigate("Messaging", { roomId: item.id, messages: item.messages });
   };
+
   const handleDelete = () => {
     socket.emit("deleteChatRoom", item.id);
     onDelete(item.id);
   };
+
   return (
     <Pressable onPress={handlePress} style={styles.cchat}>
       <Ionicons
@@ -40,15 +50,19 @@ const ChatComponent: React.FC<ChatComponentProps> = ({ item, onDelete }) => {
         <View>
           <Text style={styles.cusername}>{item.name}</Text>
           <Text style={styles.cmessage}>
-            {messages?.text ? messages.text : "Tap to start chatting"}
+            {lastMessage ? lastMessage.message : "Tap to start chatting"}
           </Text>
         </View>
         <View style={styles.deletebut}>
-          <Pressable onPress={handleDelete}>
-            <Text>Delete</Text>
-          </Pressable>
+          {!disableDelete && (
+            <Pressable onPress={handleDelete}>
+              <Ionicons name="trash-bin" size={24} color="red" />
+            </Pressable>
+          )}
           <Text style={styles.ctime}>
-            {messages?.time ? messages.time : "now"}
+          {lastMessage && lastMessage.timestamp
+              ? `${lastMessage.timestamp.hour}:${lastMessage.timestamp.mins}`
+              : "now"}
           </Text>
         </View>
       </View>

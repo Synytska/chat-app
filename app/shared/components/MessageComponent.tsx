@@ -18,7 +18,7 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
     <View
       style={[
         styles.messageWrapper,
-        isCurrentUser ? styles.currentUser : styles.otherUser
+        isCurrentUser ? styles.currentUser : styles.otherUser,
       ]}
     >
       <View style={styles.messageContent}>
@@ -31,13 +31,17 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
         <View
           style={[
             styles.messageBubble,
-            isCurrentUser ? styles.currentUserBubble : styles.otherUserBubble
+            isCurrentUser ? styles.currentUserBubble : styles.otherUserBubble,
           ]}
         >
-          <Text>{item.text}</Text>
+          <Text>{item.message}</Text>
         </View>
       </View>
-      <Text style={styles.messageTime}>{item.time}</Text>
+      <Text style={styles.messageTime}>
+        {item &&
+          item.timestamp &&
+          `${item.timestamp.hour}:${item.timestamp.mins}`}
+      </Text>
     </View>
   );
 };
