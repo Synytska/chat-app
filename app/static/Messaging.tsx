@@ -50,7 +50,6 @@ const Messaging: React.FC = () => {
     navigation.setOptions({ title: roomId });
     socket.emit("joinRoom", roomId);
     getUsername();
-    mockMessage();
     subscribeToRoomMessages(handleMessage);
 
     return () => {
