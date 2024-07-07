@@ -1,7 +1,9 @@
-import { View, Text, StyleSheet } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { View, Text, StyleSheet } from "react-native";
+
 import { Message } from "../../core/chat/chatTypes";
+
+import { Ionicons } from "@expo/vector-icons";
 
 interface MessageComponentProps {
   item: Message;
@@ -28,13 +30,16 @@ export const MessageComponent: React.FC<MessageComponentProps> = ({
           color="black"
           style={styles.avatar}
         />
-        <View
-          style={[
-            styles.messageBubble,
-            isCurrentUser ? styles.currentUserBubble : styles.otherUserBubble,
-          ]}
-        >
-          <Text>{item.message}</Text>
+        <View style={styles.messageColumn}>
+          <Text>{item.user}</Text>
+          <View
+            style={[
+              styles.messageBubble,
+              isCurrentUser ? styles.currentUserBubble : styles.otherUserBubble,
+            ]}
+          >
+            <Text>{item.message}</Text>
+          </View>
         </View>
       </View>
       <Text style={styles.messageTime}>
@@ -50,6 +55,9 @@ const styles = StyleSheet.create({
   messageWrapper: {
     width: "100%",
     marginBottom: 15,
+  },
+  messageColumn: {
+    flexDirection: "column",
   },
   messageContent: {
     flexDirection: "row",

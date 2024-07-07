@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
+
 import { AppDispatch, RootState } from "../core/store";
 import { fetchRooms, removeRoom } from "../core/chat/chatSlice";
+import { MockRoom } from "../core/chat/chatTypes";
+
 import ModalComponent from "../shared/components/ModalComponent";
 import ChatComponent from "../shared/components/ChatComponent";
-import { ChatRoom, MockRoom, Message } from "../core/chat/chatTypes";
+
 import { styles } from "../shared/styles";
+
+import { Feather } from "@expo/vector-icons";
 
 const Chat: React.FC = () => {
   const [visible, setVisible] = useState(false);

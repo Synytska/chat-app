@@ -5,7 +5,7 @@ export interface ChatRoom {
 }
 export interface MockRoom {
   id: string;
-  messages: Message[]
+  messages: Message[];
   name: string;
 }
 

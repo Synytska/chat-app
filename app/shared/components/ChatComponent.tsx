@@ -1,11 +1,14 @@
+import socket from "../../utils/socket";
+
 import React, { useLayoutEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { ChatRoom, MockRoom, Message } from "../../core/chat/chatTypes";
-import { Ionicons } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
+
 import { RootStackParamList } from "../../core/chat/navigationTypes";
-import socket from "../../utils/socket";
+import { ChatRoom, MockRoom, Message } from "../../core/chat/chatTypes";
+
+import { Ionicons } from "@expo/vector-icons";
 
 interface ChatComponentProps {
   item: ChatRoom | MockRoom;
@@ -18,9 +21,10 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
   onDelete,
   disableDelete,
 }) => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList, "Messaging">>();
+  const navigation =
+    useNavigation<StackNavigationProp<RootStackParamList, "Messaging">>();
   const [lastMessage, setLastMessage] = useState<Message | null>(null);
-console.log(lastMessage)
+  console.log(lastMessage);
   useLayoutEffect(() => {
     if (item.messages.length > 0) {
       setLastMessage(item.messages[item.messages.length - 1]);
@@ -30,7 +34,10 @@ console.log(lastMessage)
   }, [item.messages]);
 
   const handlePress = () => {
-    navigation.navigate("Messaging", { roomId: item.id, messages: item.messages });
+    navigation.navigate("Messaging", {
+      roomId: item.id,
+      messages: item.messages,
+    });
   };
 
   const handleDelete = () => {
@@ -60,7 +67,7 @@ console.log(lastMessage)
             </Pressable>
           )}
           <Text style={styles.ctime}>
-          {lastMessage && lastMessage.timestamp
+            {lastMessage && lastMessage.timestamp
               ? `${lastMessage.timestamp.hour}:${lastMessage.timestamp.mins}`
               : "now"}
           </Text>

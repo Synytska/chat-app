@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../core/store';
-import { addRoom } from '../../core/chat/chatSlice';
+import React, { useState } from "react";
+import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 
+import { AppDispatch } from "../../core/store";
+import { addRoom } from "../../core/chat/chatSlice";
 
 interface ModalComponentProps {
   setVisible: (visible: boolean) => void;
 }
 
 const ModalComponent: React.FC<ModalComponentProps> = ({ setVisible }) => {
-  const [groupName, setGroupName] = useState('');
+  const [groupName, setGroupName] = useState("");
   const dispatch = useDispatch<AppDispatch>();
 
   const closeModal = () => setVisible(false);
@@ -33,7 +33,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({ setVisible }) => {
           <Text style={styles.modalButtonText}>CREATE</Text>
         </Pressable>
         <Pressable
-          style={[styles.modalButton, { backgroundColor: '#E14D2A' }]}
+          style={[styles.modalButton, { backgroundColor: "#E14D2A" }]}
           onPress={closeModal}
         >
           <Text style={styles.modalButtonText}>CANCEL</Text>
@@ -46,35 +46,35 @@ const ModalComponent: React.FC<ModalComponentProps> = ({ setVisible }) => {
 const styles = StyleSheet.create({
   modalContainer: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalHeading: {
     fontSize: 18,
     marginBottom: 10,
   },
   modalInput: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     marginBottom: 10,
   },
   modalButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
   modalButton: {
     padding: 10,
-    backgroundColor: '#1E90FF',
+    backgroundColor: "#1E90FF",
     borderRadius: 5,
-    alignItems: 'center',
-    width: '48%',
+    alignItems: "center",
+    width: "48%",
   },
   modalButtonText: {
-    color: '#fff',
+    color: "#fff",
   },
 });
 

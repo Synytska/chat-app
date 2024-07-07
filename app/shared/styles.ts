@@ -95,4 +95,26 @@ export const styles = StyleSheet.create({
   modaltext: {
     color: "#fff",
   },
+  container: {
+    flex: 1,
+    padding: 10,
+  },
+  message: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    padding: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#ccc",
+  },
+  input: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 10,
+    marginRight: 10,
+  },
 });

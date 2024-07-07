@@ -33,7 +33,7 @@ socketIO.on("connection", (socket) => {
   });
 
   socket.on("newMessage", (data) => {
-    console.log(data)
+    console.log(data);
     const { room_id, message, user, timestamp } = data;
     let result = chatRooms.find((room) => room.id === room_id);
     if (result) {

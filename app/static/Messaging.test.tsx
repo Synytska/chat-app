@@ -1,12 +1,13 @@
-import React from "react";
-import { render, fireEvent, waitFor } from "@testing-library/react-native";
-import Messaging from "./Messaging";
-import { NavigationContainer } from "@react-navigation/native";
-import { sendMessage, subscribeToRoomMessages } from "../core/chat/chatService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
 
-// Мокаємо залежності
+import { sendMessage } from "../core/chat/chatService";
+
+import Messaging from "./Messaging";
+
 jest.mock("@react-navigation/native", () => ({
   ...jest.requireActual("@react-navigation/native"),
   useRoute: () => ({

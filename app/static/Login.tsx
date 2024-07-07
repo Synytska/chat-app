@@ -1,10 +1,19 @@
 import React, { useState } from "react";
+import {
+  Text,
+  SafeAreaView,
+  View,
+  TextInput,
+  Pressable,
+  Alert,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { LoginScreenNavigationProp } from "../core/chat/navigationTypes";
-import { useNavigation } from '@react-navigation/native';
+
 import { setUsername } from "../core/chat/authSlice";
-import { Text, SafeAreaView, View, TextInput, Pressable, Alert } from "react-native";
+import { LoginScreenNavigationProp } from "../core/chat/navigationTypes";
+
 import { styles } from "../shared/styles";
 
 const Login: React.FC = () => {

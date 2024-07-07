@@ -1,6 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
-import chatReducer from './chat/chatSlice';
-import authReducer from './chat/authSlice';
+import { configureStore } from "@reduxjs/toolkit";
+
+import chatReducer from "./chat/chatSlice";
+import authReducer from "./chat/authSlice";
 
 export const store = configureStore({
   reducer: {

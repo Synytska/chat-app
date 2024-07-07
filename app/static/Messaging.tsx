@@ -1,14 +1,19 @@
+import axios from "axios";
+import socket from "../utils/socket";
+
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, FlatList, TextInput, Button } from "react-native";
+import { View, FlatList, TextInput, Button } from "react-native";
 import { useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { MessagingScreenRouteProp } from "../core/chat/navigationTypes";
 import { Message } from "../core/chat/chatTypes";
 import { sendMessage, subscribeToRoomMessages } from "../core/chat/chatService";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+
 import { MessageComponent } from "../shared/components/MessageComponent";
-import socket from "../utils/socket";
-import axios from "axios";
+
+import { styles } from "@/shared/styles";
 
 const Messaging: React.FC = () => {
   const route = useRoute<MessagingScreenRouteProp>();
@@ -95,30 +100,5 @@ const Messaging: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  message: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-  },
-  inputContainer: {
-    flexDirection: "row",
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ccc",
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    marginRight: 10,
-  },
-});
 
 export default Messaging;
