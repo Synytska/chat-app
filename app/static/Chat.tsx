@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { View, Text, Pressable, SafeAreaView, FlatList } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AppDispatch, RootState } from "../core/store";
 import { fetchRooms, removeRoom } from "../core/chat/chatSlice";
@@ -17,6 +18,7 @@ import { Feather } from "@expo/vector-icons";
 const Chat: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [mockRooms, setMockRooms] = useState<MockRoom[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const rooms = useSelector((state: RootState) => state.chat.rooms);
 
@@ -25,19 +27,28 @@ const Chat: React.FC = () => {
       const response = await axios.get<MockRoom[]>(
         "https://96519561-2ac8-401b-9744-55ecb56be3b3.mock.pstmn.io/rooms"
       );
-      setMockRooms(response.data);
+      const mockedRoomsWithCreator = response.data.map((room) => ({
+        ...room,
+        creatorId: "mockCreatorId",
+      }));
+      setMockRooms(mockedRoomsWithCreator);
     } catch (error) {
       console.error("Error fetching chat rooms:", error);
     }
   };
 
   useEffect(() => {
+    const getCurrentUser = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      setCurrentUserId(userId);
+    };
+    getCurrentUser();
     dispatch(fetchRooms());
     addMockRooms();
   }, [dispatch]);
 
   const handleDeleteChatRoom = (id: string) => {
-    dispatch(removeRoom(id));
+    dispatch(removeRoom({ id, userId: currentUserId }));
   };
 
   return (
@@ -57,7 +68,7 @@ const Chat: React.FC = () => {
             <ChatComponent
               item={item}
               onDelete={handleDeleteChatRoom}
-              disableDelete={true}
+              currentUserId={currentUserId}
             />
           )}
           keyExtractor={(item) => item.id.toString()}
@@ -69,7 +80,7 @@ const Chat: React.FC = () => {
               <ChatComponent
                 item={item}
                 onDelete={handleDeleteChatRoom}
-                disableDelete={false}
+                currentUserId={currentUserId}
               />
             )}
             keyExtractor={(item) => item.id.toString()}

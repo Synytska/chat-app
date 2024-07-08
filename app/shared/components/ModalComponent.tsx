@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Pressable, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { AppDispatch } from "../../core/store";
 import { addRoom } from "../../core/chat/chatSlice";
@@ -12,12 +13,20 @@ interface ModalComponentProps {
 const ModalComponent: React.FC<ModalComponentProps> = ({ setVisible }) => {
   const [groupName, setGroupName] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-
   const closeModal = () => setVisible(false);
 
-  const handleCreateRoom = () => {
-    dispatch(addRoom(groupName));
-    closeModal();
+  const handleCreateRoom = async () => {
+    try {
+      const userId = await AsyncStorage.getItem("userId");
+      if (userId) {
+        dispatch(addRoom({ name: groupName, userId: userId }));
+        closeModal();
+      } else {
+        console.error("User ID not found");
+      }
+    } catch (error) {
+      console.error("Error creating room:", error);
+    }
   };
 
   return (

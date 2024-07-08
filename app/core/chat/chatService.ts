@@ -10,17 +10,34 @@ export const fetchChatRooms = async (): Promise<ChatRoom[]> => {
   return response.data;
 };
 
-export const createChatRoom = async (name: string): Promise<ChatRoom> => {
+export const createChatRoom = async (
+  name: string,
+  userId: string | null
+): Promise<ChatRoom> => {
   return new Promise((resolve) => {
-    socket.emit("createRoom", name);
+    socket.emit("createRoom", { name, creatorId: userId });
     socket.on("roomsList", (rooms) => {
-      resolve(rooms.find((room: any) => room.name === name));
+      resolve(
+        rooms.find(
+          (room: any) => room.name === name && room.creatorId === userId
+        )
+      );
     });
   });
 };
 
-export const deleteChatRoom = async (id: string): Promise<void> => {
-  socket.emit("deleteRoom", id);
+
+export const deleteChatRoom = async (id: string, userId: string | null): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    socket.emit("deleteRoom", { id, userId });
+    socket.on("deleteRoomResult", (result) => {
+      if (result.success) {
+        resolve();
+      } else {
+        reject(new Error(result.message));
+      }
+    });
+  });
 };
 
 export const sendMessage = (data: {

@@ -2,11 +2,13 @@ export interface ChatRoom {
   id: string;
   name: string;
   messages: Message[];
+  creatorId: string;
 }
 export interface MockRoom {
   id: string;
   messages: Message[];
   name: string;
+  creatorId: string;
 }
 
 export interface Message {

@@ -22,16 +22,16 @@ export const fetchRooms = createAsyncThunk("chat/fetchRooms", async () => {
 
 export const addRoom = createAsyncThunk(
   "chat/addRoom",
-  async (name: string) => {
-    const room = await createChatRoom(name);
+  async ({ name, userId }: { name: string; userId: string | null }) => {
+    const room = await createChatRoom(name, userId);
     return room;
   }
 );
 
 export const removeRoom = createAsyncThunk(
   "chat/removeRoom",
-  async (id: string) => {
-    await deleteChatRoom(id);
+  async ({ id, userId }: { id: string; userId: string | null}) => {
+    await deleteChatRoom(id, userId);
     return id;
   }
 );
@@ -58,6 +58,9 @@ const chatSlice = createSlice({
       })
       .addCase(removeRoom.fulfilled, (state, action) => {
         state.rooms = state.rooms.filter((room) => room.id !== action.payload);
+      })
+      .addCase(removeRoom.rejected, (state, action) => {
+        state.error = action.error.message || "Failed to delete room";
       });
   },
 });

@@ -1,11 +1,10 @@
-import axios from "axios";
-import socket from "../utils/socket";
-
 import React, { useEffect, useState } from "react";
 import { View, FlatList, TextInput, Button } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import socket from "../utils/socket";
 
 import { MessagingScreenRouteProp } from "../core/chat/navigationTypes";
 import { Message } from "../core/chat/chatTypes";
@@ -36,6 +35,7 @@ const Messaging: React.FC = () => {
       console.error("Error fetching chat rooms:", error);
     }
   };
+
   const getUsername = async () => {
     try {
       const value = await AsyncStorage.getItem("username");
@@ -47,14 +47,38 @@ const Messaging: React.FC = () => {
     }
   };
 
+  const loadMessages = async () => {
+    try {
+      const savedMessages = await AsyncStorage.getItem(`messages_${roomId}`);
+      if (savedMessages !== null) {
+        setMessages(JSON.parse(savedMessages));
+      }
+    } catch (e) {
+      console.error("Error while loading messages:", e);
+    }
+  };
+
+  const saveMessages = async (messagesToSave: Message[]) => {
+    try {
+      await AsyncStorage.setItem(`messages_${roomId}`, JSON.stringify(messagesToSave));
+    } catch (e) {
+      console.error("Error while saving messages:", e);
+    }
+  };
+
   useEffect(() => {
     const handleMessage = (newMessage: Message) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages, newMessage];
+        saveMessages(updatedMessages);
+        return updatedMessages;
+      });
     };
 
     navigation.setOptions({ title: roomId });
     socket.emit("joinRoom", roomId);
     getUsername();
+    loadMessages();
     subscribeToRoomMessages(handleMessage);
 
     return () => {
@@ -75,7 +99,11 @@ const Messaging: React.FC = () => {
         },
       };
       sendMessage(newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      setMessages((prevMessages) => {
+        const updatedMessages = [...prevMessages, newMessage];
+        saveMessages(updatedMessages);
+        return updatedMessages;
+      });
       setMessage("");
       mockMessage();
     }

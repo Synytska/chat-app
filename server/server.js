@@ -19,9 +19,9 @@ let chatRooms = [];
 socketIO.on("connection", (socket) => {
   console.log(`⚡: ${socket.id} user just connected!`);
 
-  socket.on("createRoom", (name) => {
-    socket.join(name);
-    const newRoom = { id: generateID(), name, messages: [] };
+  socket.on("createRoom", ({ name, creatorId }) => {
+    socket.join(name); 
+    const newRoom = { id: generateID(), name, messages: [], creatorId };
     chatRooms.unshift(newRoom);
     socket.emit("roomsList", chatRooms);
     socket.broadcast.emit("roomsList", chatRooms);
@@ -54,10 +54,20 @@ socketIO.on("connection", (socket) => {
     socket.join(roomId);
   });
 
-  socket.on("deleteRoom", (id) => {
-    chatRooms = chatRooms.filter((room) => room.id !== id);
-    socket.emit("roomsList", chatRooms);
-    socket.broadcast.emit("roomsList", chatRooms);
+  socket.on("deleteRoom", ({ id, userId }) => {
+    const roomIndex = chatRooms.findIndex(room => room.id === id);
+    if (roomIndex !== -1) {
+      if (chatRooms[roomIndex].creatorId === userId) {
+        chatRooms.splice(roomIndex, 1);
+        socket.emit("deleteRoomResult", { success: true });
+        socket.emit("roomsList", chatRooms);
+        socket.broadcast.emit("roomsList", chatRooms);
+      } else {
+        socket.emit("deleteRoomResult", { success: false, message: "You are not the creator of this room" });
+      }
+    } else {
+      socket.emit("deleteRoomResult", { success: false, message: "Room not found" });
+    }
   });
 
   socket.on("disconnect", () => {

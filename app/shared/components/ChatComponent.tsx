@@ -13,18 +13,20 @@ import { Ionicons } from "@expo/vector-icons";
 interface ChatComponentProps {
   item: ChatRoom | MockRoom;
   onDelete: (id: string) => void;
-  disableDelete: boolean;
+  currentUserId: string | null;
 }
 
 const ChatComponent: React.FC<ChatComponentProps> = ({
   item,
   onDelete,
-  disableDelete,
+  currentUserId,
 }) => {
   const navigation =
     useNavigation<StackNavigationProp<RootStackParamList, "Messaging">>();
   const [lastMessage, setLastMessage] = useState<Message | null>(null);
-  console.log(lastMessage);
+
+  const canDelete = currentUserId === item.creatorId;
+
   useLayoutEffect(() => {
     if (item.messages.length > 0) {
       setLastMessage(item.messages[item.messages.length - 1]);
@@ -61,7 +63,7 @@ const ChatComponent: React.FC<ChatComponentProps> = ({
           </Text>
         </View>
         <View style={styles.deletebut}>
-          {!disableDelete && (
+          {canDelete && (
             <Pressable onPress={handleDelete}>
               <Ionicons name="trash-bin" size={24} color="red" />
             </Pressable>

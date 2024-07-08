@@ -21,9 +21,12 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
+  const generateUserId = () => Math.random().toString(36).substring(2, 15);
+
   const storeUsername = async () => {
     try {
       await AsyncStorage.setItem("username", username);
+      await AsyncStorage.setItem("userId", generateUserId());
       dispatch(setUsername(username));
       navigation.navigate("Chat");
     } catch (e) {
